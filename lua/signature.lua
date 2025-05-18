@@ -1,40 +1,8 @@
+local utils = require('./utils')
+
 local signature_is_visible = false
 local signature_win_id = nil
 local has_run_setup = false
-
--- TODO: Move this to utils/
-local function is_signature_window(win_id)
-	local buf_id = vim.api.nvim_win_get_buf(win_id)
-
-	local filetype = vim.api.nvim_get_option_value('filetype', {})
-	if filetype == 'lsp-signature-help' then
-		return true
-	end
-
-	local lines = vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)
-	local content = table.concat(lines, '\n')
-
-	if content:match("Parameters:") or content:match("%(.*%)") then
-		return true
-	end
-
-	return false
-end
-
--- TODO: Move this to utils/ & pass signature_win_id, signature_is_visible as args
-local get_winid_if_sig_help = function()
-	local wins = vim.api.nvim_list_wins()
-	for _, win_id in ipairs(wins) do
-		if vim.api.nvim_win_is_valid(win_id) and
-			vim.api.nvim_win_get_config(win_id).relative ~= "" then
-			if is_signature_window(win_id) then
-				signature_win_id = win_id
-				signature_is_visible = true
-				break
-			end
-		end
-	end
-end
 
 local M = {}
 
@@ -53,7 +21,9 @@ M.setup = function(opts)
 	opts = vim.tbl_deep_extend('force', default_opts, opts)
 	user_opts = opts
 	vim.api.nvim_create_autocmd({ "WinNew" }, {
-		callback = get_winid_if_sig_help
+		callback = function()
+			signature_win_id, signature_is_visible = utils.get_winid_if_sig_help(signature_win_id, signature_is_visible)
+		end
 	})
 
 	local close_events = nil
