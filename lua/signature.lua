@@ -64,7 +64,7 @@ M.close_signature = function()
 end
 
 -- Opens the signature help window
---@param opts? vim.lsp.buf.signature_help.Opts (:h vim.lsp.buf.signature_help.Opts)
+-- @param opts? vim.lsp.buf.signature_help.Opts (:h vim.lsp.buf.signature_help.Opts)
 --
 -- opts defaults to:
 -- opts = { border = 'rounded' }
@@ -105,7 +105,7 @@ end
 
 -- Toggles the signature help window, i.e., opens it if the signature window is not currently open, or
 -- closes it if the signature help window is already open
---@param opts? vim.lsp.buf.signature_help.Opts (:h vim.lsp.buf.signature_help.Opts)
+-- @param opts? vim.lsp.buf.signature_help.Opts (:h vim.lsp.buf.signature_help.Opts)
 --
 -- opts defaults to:
 -- opts = { border = 'rounded' }
