@@ -1,5 +1,7 @@
-local utils = require('./utils')
+-- TODO:
+-- * make it so signature can automatically show on InsertEnter within parentheses of function call
 
+local utils = require('utils')
 local signature_is_visible = false
 local signature_win_id = nil
 local has_run_setup = false
@@ -31,10 +33,18 @@ M.setup = function(opts)
 		close_events = {
 			'CursorMoved',
 			'CursorMovedI',
-			'InsertCharPre'
+			'InsertCharPre',
+			-- So they can't have more than one signature showing at a time
+			'BufLeave',
+			'WinLeave'
 		}
 	else
-		close_events = { 'CursorMoved' }
+		close_events = {
+			'CursorMoved',
+			-- So they can't have more than one signature showing at a time
+			'BufLeave',
+			'WinLeave'
+		}
 	end
 
 	vim.api.nvim_create_autocmd(close_events, {
@@ -78,6 +88,7 @@ M.open_signature = function(opts)
 
 	local signature_help_config = {
 		border = 'rounded',
+		title = 'signature.nvim'
 	}
 
 	signature_help_config = vim.tbl_deep_extend('force', signature_help_config, opts)
@@ -92,11 +103,17 @@ M.open_signature = function(opts)
 		signature_help_config.close_events = {
 			'CursorMoved',
 			'CursorMovedI',
-			'InsertCharPre'
+			'InsertCharPre',
+			-- So they can't have more than one signature showing at a time
+			'BufLeave',
+			'WinLeave'
 		}
 	else
 		signature_help_config.close_events = {
-			'CursorMoved'
+			'CursorMoved',
+			-- So they can't have more than one signature showing at a time
+			'BufLeave',
+			'WinLeave'
 		}
 	end
 
